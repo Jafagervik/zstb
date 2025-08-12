@@ -1,9 +1,48 @@
 const std = @import("std");
+const cast = @import("cast.zig");
 const StringSplitIterator = std.mem.SplitIterator(u8, .any);
 
 // NOTE: Not tested
 pub inline fn split(s: []const u8, delim: []const u8) StringSplitIterator {
     return std.mem.splitAny(u8, s, delim);
+}
+
+/// Compares two string slices lexicographically.
+///
+/// It returns:
+/// - A negative value if `str1` is lexicographically less than `str2`.
+/// - A positive value if `str1` is lexicographically greater than `str2`.
+/// - 0 if the strings are equal.
+///
+/// The comparison is based on the ASCII values of the characters (bytes).
+pub fn compare(str1: []const u8, str2: []const u8) i32 {
+    if (eql(str1, str2)) return 0;
+    const min_len = @min(str1.len, str2.len);
+
+    for (0..min_len) |i| {
+        const char1 = str1[i];
+        const char2 = str2[i];
+
+        if (char1 != char2) {
+            return cast.byteToInt(char1) - cast.byteToInt(char2);
+        }
+    }
+
+    return cast.usizeToInt(str1.len) - cast.usizeToInt(str2.len);
+}
+
+// NOTE: These two should be moved
+
+test "compare string" {
+    const apple = "apple";
+    const banana = "banana";
+    const hello = "hello";
+
+    try std.testing.expectEqual(0, compare(apple, apple));
+    try std.testing.expectEqual(-1, compare(apple, banana));
+    try std.testing.expectEqual(1, compare(banana, apple));
+    try std.testing.expectEqual(-7, compare(apple, hello));
+    try std.testing.expectEqual(6, compare(hello, banana));
 }
 
 /// Joins a list of strings with designated separator
@@ -19,11 +58,12 @@ pub fn join(allocator: std.mem.Allocator, strings: []const []const u8, delimiter
     if (strings.len == 0) return allocator.alloc(u8, 0);
 
     // Calculate total length: sum of string lengths + separators
-    var total_len: usize = 0;
-    for (strings) |s| {
-        total_len += s.len;
-    }
-    total_len += delimiter.len * (strings.len - 1);
+    const total_len = blk: {
+        var sum: usize = 0;
+        for (strings) |s| sum += s.len;
+        sum += delimiter.len * (strings.len - 1);
+        break :blk sum;
+    };
 
     // Allocate memory for the result
     var result = try allocator.alloc(u8, total_len);
