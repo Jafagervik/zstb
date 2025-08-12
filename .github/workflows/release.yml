@@ -17,12 +17,14 @@ jobs:
         with:
           version: 0.14.0
       - name: Build
-        run: zig build --release=safe
+        run: zig build install --release=safe
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: zig-library
           path: zig-out/bin/*
+      - name: Debug output paths 
+        run: ls -R
 
   release:
     needs: build
