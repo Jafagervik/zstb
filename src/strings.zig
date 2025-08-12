@@ -1,4 +1,10 @@
 const std = @import("std");
+const StringSplitIterator = std.mem.SplitIterator(u8, .any);
+
+// NOTE: Not tested
+pub inline fn split(s: []const u8, delim: []const u8) StringSplitIterator {
+    return std.mem.splitAny(u8, s, delim);
+}
 
 /// Joins a list of strings with designated separator
 ///
@@ -116,9 +122,133 @@ test "eql string" {
     try std.testing.expectEqual(false, eql(" ", "  "));
 }
 
+pub fn toUpper(s: []const u8) []const u8 {
+    _ = s;
+    return "";
+}
+
+pub fn toLower(s: []const u8) []const u8 {
+    _ = s;
+    return "";
+}
+
+// pub fn replace(alloc: std.mem.Allocator, s: []const u8, old: []const u8, new: []const u8) ![]const u8 {}
+
+pub fn trim(s: []const u8) []const u8 {
+    var start: usize = 0;
+    var end: usize = s.len;
+
+    while (start < end and isWhitespace(s[start])) : (start += 1) {}
+
+    while (end > start and isWhitespace(s[end - 1])) : (end -= 1) {}
+
+    return s[start..end];
+}
+
+test "trim string" {
+    const inputs: [6][]const u8 = .{
+        "   hello world   ",
+        "no trim",
+        "   ",
+        "",
+        "\t\nleading and trailing\r\n",
+        " a ",
+    };
+
+    const expected: [6][]const u8 = .{
+        "hello world",
+        "no trim",
+        "",
+        "",
+        "leading and trailing",
+        "a",
+    };
+
+    inline for (expected, inputs) |exp, act| {
+        try std.testing.expect(eql(exp, trim(act)));
+    }
+}
+
 // =========================
 // Chars
 // =========================
+
+/// Checks char at a certain index in a safe manner
+/// If idx is out of bounds, it returns none
+pub inline fn charAt(s: []const u8, idx: usize) ?u8 {
+    if (idx >= s.len) return null;
+    return s[idx];
+}
+
+test "char string" {
+    const a = "";
+    const b = "a";
+    const c = "bccccccccc";
+
+    try std.testing.expectEqual(null, charAt(a, 0));
+    try std.testing.expectEqual('a', charAt(b, 0));
+    try std.testing.expectEqual(null, charAt(b, 1));
+    try std.testing.expectEqual('b', charAt(c, 0));
+    try std.testing.expectEqual('c', charAt(c, 5));
+    try std.testing.expectEqual(null, charAt(c, 12341));
+}
+
+pub inline fn first(s: []const u8) ?u8 {
+    if (isEmpty(s)) return null;
+    return s[0];
+}
+
+test "first string" {
+    const a = "";
+    const b = "a";
+    const c = "bccccccccc";
+
+    try std.testing.expectEqual(null, first(a));
+    try std.testing.expectEqual('a', first(b));
+    try std.testing.expectEqual('b', first(c));
+}
+
+pub inline fn last(s: []const u8) ?u8 {
+    if (isEmpty(s)) return null;
+    return s[s.len - 1];
+}
+
+test "last string" {
+    const a = "";
+    const b = "b";
+    const c = "bccccccccc";
+
+    try std.testing.expectEqual(null, last(a));
+    try std.testing.expectEqual('b', last(b));
+    try std.testing.expectEqual('c', last(c));
+}
+
+pub inline fn toChar(s: []const u8) ?u8 {
+    return if (s.len == 1) s[0] else null;
+}
+
+test "toChar string" {
+    const a = "aa";
+    const b = "b";
+
+    try std.testing.expectEqual(null, toChar(a));
+    try std.testing.expectEqual('b', toChar(b));
+}
+
+pub inline fn charToString(allocator: std.mem.Allocator, c: u8) ![]const u8 {
+    const str_slice = try allocator.alloc(u8, 1);
+    str_slice[0] = c;
+    return str_slice;
+}
+
+test "charToString string" {
+    const a = 'a';
+
+    const out = try charToString(std.testing.allocator, a);
+    defer std.testing.allocator.free(out);
+
+    try std.testing.expect(eql("a", out));
+}
 
 pub inline fn isWhitespace(c: u8) bool {
     return c == ' ' or c == '\t' or c == '\r' or c == '\n' or c == '\x0B' or c == '\x0C';
