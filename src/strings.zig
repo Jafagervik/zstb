@@ -122,14 +122,58 @@ test "eql string" {
     try std.testing.expectEqual(false, eql(" ", "  "));
 }
 
-pub fn toUpper(s: []const u8) []const u8 {
-    _ = s;
-    return "";
+/// Converts an ASCII character to its uppercase equivalent.
+/// Returns the character unchanged if it's not a lowercase ASCII letter.
+pub inline fn asciiToUpper(c: u8) u8 {
+    if (c >= 'a' and c <= 'z') {
+        return c - 'a' + 'A';
+    }
+    return c;
 }
 
-pub fn toLower(s: []const u8) []const u8 {
-    _ = s;
-    return "";
+/// Converts an ASCII string to uppercase.
+/// Allocates a new string for the result.
+/// Returns an error if memory allocation fails.
+pub fn toUpper(allocator: std.mem.Allocator, s: []const u8) ![]const u8 {
+    var upper_str = try allocator.alloc(u8, s.len);
+    for (s, 0..) |char_byte, i| upper_str[i] = asciiToUpper(char_byte);
+    return upper_str;
+}
+
+test "toUpper string" {
+    const a = "aaaa";
+
+    const out = try toUpper(std.testing.allocator, a);
+    defer std.testing.allocator.free(out);
+
+    try std.testing.expect(eql("AAAA", out));
+}
+
+/// Converts an ASCII character to its lowercase equivalent.
+/// Returns the character unchanged if it's not an uppercase ASCII letter.
+pub inline fn asciiToLower(c: u8) u8 {
+    if (c >= 'A' and c <= 'Z') {
+        return c - 'A' + 'a';
+    }
+    return c;
+}
+
+/// Converts an ASCII string to lowercase.
+/// Allocates a new string for the result.
+/// Returns an error if memory allocation fails.
+pub fn toLower(allocator: std.mem.Allocator, s: []const u8) ![]const u8 {
+    var lower_str = try allocator.alloc(u8, s.len);
+    for (s, 0..) |char_byte, i| lower_str[i] = asciiToLower(char_byte);
+    return lower_str;
+}
+
+test "toLower string" {
+    const b = "bBbB";
+
+    const out = try toLower(std.testing.allocator, b);
+    defer std.testing.allocator.free(out);
+
+    try std.testing.expect(eql("bbbb", out));
 }
 
 // pub fn replace(alloc: std.mem.Allocator, s: []const u8, old: []const u8, new: []const u8) ![]const u8 {}

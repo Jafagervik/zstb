@@ -21,13 +21,14 @@ pub const Color = enum {
     }
 };
 
-pub fn print(color: Color, comptime fmt: []const u8, args: anytype) !void {
-    const RESET = "\x1b[0m";
+const RESET = "\x1b[0m";
+
+// NOTE: BROKEN
+pub fn print(color: Color, comptime fmt: []const u8, args: anytype) void {
     std.debug.print("{s}" ++ fmt ++ "{s}", .{ color.toAnsi(), args, RESET });
 }
 
 pub fn printStdout(color: Color, comptime fmt: []const u8, args: anytype) !void {
-    const RESET = "\x1b[0m";
     try std.io.getStdOut().writer().print("{s}" ++ fmt ++ "{s}", .{ color.toAnsi(), args, RESET });
 }
 
