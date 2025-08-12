@@ -116,6 +116,10 @@ test "eql string" {
     try std.testing.expectEqual(false, eql(" ", "  "));
 }
 
+// =========================
+// Chars
+// =========================
+
 pub inline fn isWhitespace(c: u8) bool {
     return c == ' ' or c == '\t' or c == '\r' or c == '\n' or c == '\x0B' or c == '\x0C';
 }
