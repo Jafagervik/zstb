@@ -1,0 +1,10 @@
+.{
+    .name = .simple,
+    .paths = .{""},
+    .version = "0.0.0",
+    .fingerprint = 0xc17b3d02585ea6ef,
+    .minimum_zig_version = "0.14.0",
+    .dependencies = .{
+        .zstb = .{ .path = "../.." },
+    },
+}

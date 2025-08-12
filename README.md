@@ -12,10 +12,10 @@ To install, run:
 zig fetch --save git+https://github.com/Jafagervik/zstb#{version}
 ```
 
-Where {version} is the release version you want to use; e.g 0.1.4: 
+Where {version} is the release version you want to use; e.g 0.1.7: 
 
 ```sh
-zig fetch --save git+https://github.com/Jafagervik/zstb#v0.1.4
+zig fetch --save git+https://github.com/Jafagervik/zstb#v0.1.7
 ```
 
 In your `build.zig` file: add like this:
@@ -48,6 +48,7 @@ const isSame = zstb.strings.eql("a", "b");
 std.debug.print("{any}\n", .{isSame});
 ```
 
+See `examples/` for example setup
 
 ## Modules
 
