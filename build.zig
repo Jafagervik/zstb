@@ -4,19 +4,16 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib_mod = b.createModule(.{
+    const lib_mod = b.addModule("zstb", .{
         .root_source_file = b.path("src/zstb.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    const lib = b.addLibrary(.{
-        .linkage = .static,
+    b.installArtifact(b.addStaticLibrary(.{
         .name = "zstb",
         .root_module = lib_mod,
-    });
-
-    b.installArtifact(lib);
+    }));
 
     const lib_unit_tests = b.addTest(.{
         .root_module = lib_mod,
