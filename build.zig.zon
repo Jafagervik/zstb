@@ -1,6 +1,6 @@
 .{
     .name = .zstb,
-    .version = "0.1.7", // Prev was 1.6.0
+    .version = "0.1.8", // Prev release was 1.7.0
     .fingerprint = 0x9b9ef56b04613ab0,
     .minimum_zig_version = "0.14.0",
     .dependencies = .{},
