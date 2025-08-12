@@ -1,5 +1,9 @@
 #  ZSTB - Zig Standard Library Extension
 
+## Requirements
+
+* Zig Version 0.14.0
+
 ## Usage 
 
 To install, run: 
