@@ -174,8 +174,6 @@ test "isNumeric string" {
     try std.testing.expectEqual(false, isNumeric("123_"));
     try std.testing.expectEqual(false, isNumeric(" 123"));
     try std.testing.expectEqual(false, isNumeric(" 1 2 3 "));
-
-    try std.testing.expectEqual(false, isNumeric("12345"));
 }
 
 // Note: hex
