@@ -9,13 +9,13 @@
 To install, run: 
 
 ```sh
-zig fetch --save git+https://github.com/Jafagercik/zstb#{version}
+zig fetch --save git+https://github.com/Jafagervik/zstb#{version}
 ```
 
 Where {version} is the release version you want to use; e.g 0.1.4: 
 
 ```sh
-zig fetch --save git+https://github.com/Jafagercik/zstb#v0.1.4
+zig fetch --save git+https://github.com/Jafagervik/zstb#v0.1.4
 ```
 
 In your `build.zig` file: add like this:
